@@ -8,23 +8,26 @@
 
 use strict;
 
-#loops through all bam files
+#create a loop for all files
+#adjust according to numbers of files
+#copy the correct file name from folder
+#change file names and file path for Dd2 files
 my $file = "";
-for (my $f = 0; $f < 8; $f++) {
+for (my $f = 0; $f < 8; $f++) { 
 
-	if ($f == 0) {$file = "GamV_unspliced"}
-	if ($f == 1) {$file = "Trophs_unspliced"}
-	if ($f == 2) {$file = "GamVpolyA_unspliced"}
-	if ($f == 3) {$file = "TrophspolyA_unspliced"}
-	if ($f == 4) {$file = "GamVJHU_unspliced"}
-	if ($f == 5) {$file = "Sporozoites_unspliced"}
-	if ($f == 6) {$file = "Rings_unspliced"}
-	if ($f == 7) {$file = "Schizont_unspliced"}
+	if ($f == 0) {$file = "Rings"}
+	if ($f == 1) {$file = "Trophozoites"}
+	if ($f == 2) {$file = "Schizonts"}
+	if ($f == 3) {$file = "GamV"}
+	if ($f == 4) {$file = "GamV_2"}
+	if ($f == 5) {$file = "Sporozoites"}
+	if ($f == 6) {$file = "Trophs_polyA"}
+	if ($f == 7) {$file = "GamV_polyA"}
 	print "$file\n";
 	
-	open (BAM, "samtools view /local/projects-t3/SerreDLab-3/jgruenebast/ONT/NF54/bam-files_NF54_3D7-UNspliced/ONT_$file\.bam |");
-	open (LEN, ">", "/local/projects-t3/SerreDLab-3/jgruenebast/ONT/rRNA/NF54mRNA-readcount/mRNA_$file\.csv");
-	open (GFF, "<", "/local/projects-t3/SerreDLab-3/jgruenebast/Genomes/Pf_3D7/PlasmoDB-63_Pfalciparum3D7.gff");
+	open (BAM, "samtools view /path/to/bam/$file\.bam |"); #Change file path to bam files (they need to be in one folder)
+	open (LEN, ">", "/path/to/output/mRNA_$file\.csv"); #change file path
+	open(GFF, "<", "/path/to/gff/PlasmoDB-63_Pfalciparum3D7.gff"); #change file path
 
 #create a hash to store the protein-coding genes from gff file (by position and basepair)		
 my %coding = ();
@@ -72,7 +75,13 @@ while (<BAM>) {
 	#split the table by tab
 	my $read = $_;
 	my @column = split /\t/, $read; 	
-		#print "$column[1]\n";
+	
+ 	#print "$column[1]\n";
+        #column [1] = strand (0 or 16)
+      	#column [2] = Chromosome
+      	#column [3] = start position of the aligned read
+      	#column [5] = Cigar string
+      	#column [9] = sequence
 	
  	#correct the strand annotation for bam to match gff file
 	my $strand;
@@ -108,7 +117,8 @@ while (<BAM>) {
 	
  	#set counter to 0 (variable counts how many bp overlap)
 	$number_of_coding = 0;
-	
+
+ 	#compare bam to gff by position stored
 	$gene = "";
 	for(my $i = $column[3]; $i < $end; $i++){
 		my $posbam = join("_", $column[2], $strand, $i);
