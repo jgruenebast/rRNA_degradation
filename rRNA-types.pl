@@ -10,7 +10,6 @@ use strict;
 ###############################################################################
 
 my $output = "";
-my %coding;
 
 open (OUT, ">", "/path/to/output/NF54_rRNA-types.csv"); #change file path
 
