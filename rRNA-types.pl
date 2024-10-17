@@ -10,50 +10,50 @@ use strict;
 ###############################################################################
 
 my $output = "";
+my %coding;
 
-open (OUT, ">", "/path/to/output/NF54_rRNA-types.csv"); #change file path
+open (OUT, ">", "/path/to/output/rRNA-types.csv"); #change file path
 
+#store all Gene_IDs in a hash
+my %gene_ID;
+$gene_ID{"PF3D7_0112700"} = 1;
+$gene_ID{"PF3D7_0532000"} = 1;
+$gene_ID{"PF3D7_0726000"} = 1;
+$gene_ID{"PF3D7_1148640"} = 1;
+$gene_ID{"PF3D7_1371300"} = 1;
+$gene_ID{"PF3D7_0112300"} = 1;
+$gene_ID{"PF3D7_0531600"} = 1;
+$gene_ID{"PF3D7_0725600"} = 1;
+$gene_ID{"PF3D7_1148600"} = 1;
+$gene_ID{"PF3D7_1371000"} = 1;
 
-for (my $c = 0; $c < 10; $c++) {
-
-    if ($c == 1) {$output = "PF3D7_0112700"}
-    if ($c == 0) {$output = "PF3D7_0532000"}
-    if ($c == 2) {$output = "PF3D7_0726000"}
-    if ($c == 3) {$output = "PF3D7_1148640"}
-    if ($c == 4) {$output = "PF3D7_1371300"}
-    if ($c == 5) {$output = "PF3D7_0112300"}
-    if ($c == 6) {$output = "PF3D7_0531600"}
-    if ($c == 7) {$output = "PF3D7_0725600"}
-    if ($c == 8) {$output = "PF3D7_1148600"}
-    if ($c == 9) {$output = "PF3D7_1371000"}
-
-    print "$output\n";
-    open (GFF, "<", "/path/to/gff/PlasmoDB-63_Pfalciparum3D7.gff"); #change file path
-
-    #define hash to store position of diff. rRNA types
-    my %coding;
-
-    while (<GFF>) {
+open (GFF, "<", "/path/to/gtf/PlasmoDB-63_Pfalciparum3D7.gff");
+while (<GFF>) {
         chomp;
-
         my $gffinfo = $_;
-        my @gene = split /\t/, $gffinfo;		
-        if((defined $gene[8]) and ($gene[8] =~ "$output")){
-            for(my $bp = ($gene[3]); $bp < ($gene[4]); $bp++){	 
-                my $position = "$gene[0]_$gene[6]_$bp";
-                $coding{$position} = $gene[8];
-            }
-        }
-    }
-    close GFF;
+        my @gene = split /\t/, $gffinfo;
+        if((defined $gene[8]) and ($gene[2] eq "ncRNA_gene")) {
+        	my @name = split ";", $gene[8];
+    		#print STDERR "$name[0]\n";
+        	$name[0] =~s/ID=//;	
+        	#print STDERR "$name[0]\n";
+        
+   	 	if (defined $gene_ID{$name[0]}){
+            		for(my $bp = ($gene[3]); $bp < ($gene[4]); $bp++){	 
+                		my $position = "$gene[0]_$gene[6]_$bp";
+               			$coding{$position} = $name[0];
+            		}
+        	}
+    	}
+}	
+close GFF;
 
-
-  #create a loop for all files
-  #adjust according to numbers of files
-  #copy the correct file name from folder
-  #change file names and file path for Dd2 files
-  my $file = "";
-  for (my $f = 0; $f < 8; $f++) { 
+#create a loop for all files
+#adjust according to numbers of files
+#copy the correct file name from folder
+#change file names and file path for Dd2 files
+my $file = "";
+for (my $f = 0; $f < 8; $f++) { 
 
 	if ($f == 0) {$file = "Rings"}
 	if ($f == 1) {$file = "Trophozoites"}
@@ -123,12 +123,10 @@ for (my $c = 0; $c < 10; $c++) {
         my $math = $number_of_coding / $readlength_clipped;
         if ($math >= 0.8) {$read_output++};
     }
-
+    close BAM;
     # Print the results in output file split by tab (change for "," to get a true .csv file)
     print OUT "$file\t$output\t$read_output\n";
 }
-}
-close BAM;
 close OUT;
 
 exit;
