@@ -53,16 +53,13 @@ close GFF;
 #copy the correct file name from folder
 #change file names and file path for Dd2 files
 my $file = "";
-for (my $f = 0; $f < 8; $f++) { 
+for (my $f = 0; $f < 5; $f++) { 
 
 	if ($f == 0) {$file = "Rings"}
 	if ($f == 1) {$file = "Trophozoites"}
 	if ($f == 2) {$file = "Schizonts"}
 	if ($f == 3) {$file = "GamV"}
-	if ($f == 4) {$file = "GamV_2"}
-	if ($f == 5) {$file = "Sporozoites"}
-	if ($f == 6) {$file = "Trophs_polyA"}
-	if ($f == 7) {$file = "GamV_polyA"}
+	if ($f == 4) {$file = "Sporozoites"}
 	print "$file\n";
 	
 	#path to bam files and output files
