@@ -59,14 +59,12 @@ close GFF;
 #copy the correct file name from folder
 #change file names and file path for Dd2 files
 my $file = "";
-for (my $f = 0; $f < 6; $f++) { 
+for (my $f = 0; $f < 4; $f++) { 
 
 	if ($f == 0) {$file = "Rings"}
 	if ($f == 1) {$file = "Trophozoites"}
 	if ($f == 2) {$file = "Schizonts"}
 	if ($f == 3) {$file = "GamV"}
-	if ($f == 4) {$file = "GamV_2"}
-	if ($f == 5) {$file = "Sporozoites"}
 	print "$file\n";
 	
 	open (BAM, "samtools view /path/to/bam/$file\.bam |"); #change file path to bam files (they need to be in one folder)
