@@ -2,7 +2,7 @@
 
 use strict;
 
-open(GFF, "<", "/local/projects-t3/SerreDLab-3/jgruenebast/Genomes/Pf_3D7/PlasmoDB-63_Pfalciparum3D7.gff");
+open(GFF, "<", "/path/to/gff/PlasmoDB-63_Pfalciparum3D7.gff"); #change file path
 
 my %coding;
 
@@ -11,7 +11,15 @@ while (<GFF>) {
 
     my $gffinfo = $_;
     my @gene = split /\t/, $gffinfo;
+ 	
+  	#$gene[0] = Chr
+	#$gene[2] = protein_coding_gene
+	#$gene[3] = start
+	#$gene[4] = end
+	#$gene[6] = strand
+	#$gene[8] = GeneID
 
+     #stores all protein-coding genes, check gff file for correct annotation
     if ((defined $gene[8]) and ($gene[2] eq "protein_coding_gene")) {
         for (my $bp = $gene[3]; $bp < $gene[4]; $bp++) {
             my $position = "$gene[0]_$gene[6]_$bp";
@@ -22,21 +30,23 @@ while (<GFF>) {
 
 close GFF;
 
+#create a loop for all files
+#adjust according to numbers of files
+#copy the correct file name from folder
+#change file names and file path for Dd2 files
 my $file = "";
-for (my $f = 0; $f < 8; $f++) {
+for (my $f = 0; $f < 5; $f++) { 
 
-	if ($f == 0) {$file = "GamV"}
-	if ($f == 1) {$file = "Trophs"}
-	if ($f == 2) {$file = "GamVpolyA_new"}
-	if ($f == 3) {$file = "TrophspolyA_new"}
-	if ($f == 4) {$file = "GamVJHU_new"}
-	if ($f == 5) {$file = "Sporozoites"}
-	if ($f == 6) {$file = "Rings"}
-	if ($f == 7) {$file = "Schizont"}
+	if ($f == 0) {$file = "Rings"}
+	if ($f == 1) {$file = "Trophozoites"}
+	if ($f == 2) {$file = "Schizonts"}
+	if ($f == 3) {$file = "GamV"}
+	if ($f == 4) {$file = "Sporozoites"}
 	print "$file\n";
 	
-	open (BAM, "samtools view /local/projects-t3/SerreDLab-3/jgruenebast/ONT/NF54/bam-files_NF54/ONT_$file\.bam |");
-	open (LEN, ">", "/local/projects-t3/SerreDLab-3/jgruenebast/ONT/rRNA/mRNA_degradation/NF54_$file\_mRNA-all\.csv");
+	#path to bam files and output files
+	open (BAM, "samtools view /path/to/bam/$file\.bam |"); #Change file path to bam files (they need to be in one folder)
+	open (LEN, ">", "/path/to/output/NF54_$file\_mRNA-all\.csv");
 	
 my @counts = ();
 my $number_of_coding;
@@ -81,6 +91,7 @@ while (<BAM>) {
         }
     }
 
+	#change percentage if needed 	
     my $math = $number_of_coding / $readlength_clipped;
     if ($math >= 0.8) {
         $counts[$readlength_clipped]++;
