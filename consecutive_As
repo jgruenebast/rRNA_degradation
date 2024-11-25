@@ -1,0 +1,52 @@
+#!/usr/bin/perl -w
+
+use strict;
+
+open (PILEUP, "<", "/path/to/mpileup/file.pileup") or die "Could not open pileup file: $!";
+open (POS, ">", "/path/to/output/As_20bpSliding.csv") or die "Could not open output file: $!";
+
+my @pos;
+my @genomic_position;
+my $n = 0;
+
+while (<PILEUP>) {
+    chomp;
+    
+    # Split the line by tab and store in an array @column
+    my @column = split /\t/, $_;
+    my $position = $column[1];
+    my $nucleotide = $column[2];
+    
+    # Store the position
+    $genomic_position[$n] = $position;
+    
+    # Store 1 if nucleotide is 'A', otherwise store 0
+    if ($nucleotide =~ /[A]/) {
+        $pos[$n] = 1;
+    } else {
+        $pos[$n] = 0;
+    }
+    
+    #add +1 to $n so that it adjusts the position of the array
+    $n++;
+}
+
+# Loop through the positions with a sliding window by defined steps
+my $window_size = 20; 
+my $step_size = 10; 
+
+for (my $k = 0; $k < $n; $k += $step_size) {
+    my $As = 0; 
+    
+    for (my $i = $k; $i < ($window_size + $k) && $i < $n; $i++){
+        $As += $pos[$i];
+    }
+    
+    # Output the starting position of the window and the count of A's
+    print POS "$genomic_position[$k]\t$As\n";
+}
+
+close PILEUP;
+close POS;
+
+exit;
