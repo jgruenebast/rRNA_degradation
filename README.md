@@ -40,3 +40,8 @@ samtools index -b sample.bam
 10) Assess degradation of the 20 most abundant genes in Dd2 parasites: top20genes_Dd2.pl
 11) Calculate the percentiles of read length at rRNAs: percentiles_rRNA_readlength.pl
 12) Calculate the percentiles of read length at all mRNAs: percentiles_mRNA_readlength.pl
+
+
+For SRA upload fast5 files were base-called using an older version of guppy to match SRA criteria and have fast5 files with base-called information. However, all analysis have been based on the above described workflow.  
+
+/usr/local/packages/guppy-4.2.2/bin/guppy_basecaller -x "cuda:6" --input_path /path/to/fast5 --save_path /path/to/output-directory --config rna_r9.4.1_70bps_hac.cfg --gpu_runners_per_device 8 --num_callers 1 --fast5_out
