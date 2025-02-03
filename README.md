@@ -4,24 +4,29 @@ Scripts used for analysis of rRNA degradation in _Plasmodium falciparum_ asexual
 
 The data was generated using the SQK-RNA002 kit (Oxford Nanopore Technologies) 
 
-Step 1: Reads (fast5 format) were base-called using guppy version 6.4.2 on a GPU 
+**Step 1:** Reads (fast5 format) were base-called using guppy version 6.4.2 on a GPU 
+
 /usr/local/packages/guppy-6.4.2_gpu/bin/guppy_basecaller -x "cuda:0" --input_path /path/to/fast5 --save_path /path/to/output-directory --config rna_r9.4.1_70bps_hac.cfg --min_qscore 7 --records_per_fastq 10000000 --gpu_runners_per_device 8 --num_callers 1
 
-Step 2: Concatenate your fastq files that passed guppy using the cat command
+**Step 2:** Concatenate your fastq files that passed guppy using the cat command
+
 cat *fastq > combined_sample.fastq
 
-Step 3: Use minimap for alignment 
+**Step 3:** Use minimap for alignment 
+
 minimap2 -ax map-ont -t 2 /path/to/reference/Genome.fasta /path/to/guppy/pass/sample.fastq > sample.sam
 
-Step 4: Use samtools to sort and convert sam to bam 
+**Step 4:** Use samtools to sort and convert sam to bam 
+
 samtools view -bhF 2308 sample.sam | samtools sort -o sample.bam
 
-Step 5: Index bam file using samtools
+**Step 5:** Index bam file using samtools
+
 samtools index -b sample.bam
 
-Step 6: Visualize the data using IGV
+**Step 6:** Visualize the data using IGV
 
-Explanation of different Perl scrips: 
+**Explanation of different Perl scrips: **
 
 1) Count the number of reads at different categories (mRNA, rRNA, ncRNA, pseudogenes, other): count_totalreads_mRNA-rRNA-ncRNA.pl
 2) Count the number or reads at different rRNA types (A, S1, S2): rRNA-types.pl
