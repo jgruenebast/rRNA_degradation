@@ -14,7 +14,7 @@ cat *fastq > combined_sample.fastq
 
 **Step 3:** Use minimap for alignment 
 
-minimap2 -ax map-ont -t 2 /path/to/reference/Genome.fasta /path/to/guppy/pass/sample.fastq > sample.sam
+minimap2 -ax map-ont -t 2 /path/to/reference_genome.fasta /path/to/guppy/pass/sample.fastq > sample.sam
 
 **Step 4:** Use samtools to sort and convert sam to bam 
 
@@ -26,7 +26,7 @@ samtools index -b sample.bam
 
 **Step 6:** Visualize the data using IGV
 
-**Explanation of different Perl scrips: **
+**Explanation of different Perl scrips:**
 
 1) Count the number of reads at different categories (mRNA, rRNA, ncRNA, pseudogenes, other): count_totalreads_mRNA-rRNA-ncRNA.pl
 2) Count the number or reads at different rRNA types (A, S1, S2): rRNA-types.pl
